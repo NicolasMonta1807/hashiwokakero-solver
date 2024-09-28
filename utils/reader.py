@@ -3,17 +3,17 @@ import numpy as np
 def readgame(filename):
   with open(filename, 'r') as f:
     try:
-      lines = f.readlines()
-      size = [int(x) for x in lines[0].split(',')]
+      dimensions = f.readline().strip().split(",")      
+      rows = int(dimensions[0])
       
-      matrix = np.zeros(size, dtype=int)
+      matrix = []
       
-      for i, line in enumerate(lines[1:]):
-        for x in line:
-          if x != '\n':
-            matrix[i] = int(x)
+      for _ in range(rows):
+        line = f.readline().strip()
+        row = [int(char) for char in line]
+        matrix.append(row)
     
-      return matrix
+      return np.array(matrix)
     except FileNotFoundError:
       # TODO: Better handle exception
       print("File not found")
