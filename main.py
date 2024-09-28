@@ -9,7 +9,7 @@ def main(filename):
   pygame.init()
   board = Board(gameMatrix)
   board.generateBoard()
-  board.initScreen(512, 512)
+  board.initScreen()
 
   clock = pygame.time.Clock()
   pygame.display.set_caption("Hashiwokakero - By TwoMates")
