@@ -86,7 +86,16 @@ class Board:
       source = self.getDrawPosition(edge[1][0])
       destination = self.getDrawPosition(edge[1][1])
       pygame.draw.line(self.screenSurface, consts.GRAY, source, destination, 1)
-        
+  
+  def drawUserEdges(self):
+    if len(self.userEdges) == 0:
+      return
+
+    for edge in self.userEdges:
+      source = self.getDrawPosition(edge[1][0])
+      destination = self.getDrawPosition(edge[1][1])
+      pygame.draw.line(self.screenSurface, consts.BLACK, source, destination, 5)
+     
   def distanceToEdge(self, point, edge):
     # Unpack the coordinates of the line segment and the point
     (x1, y1) = self.getDrawPosition(edge[1][0])
@@ -154,6 +163,7 @@ class Board:
     # Function to run with every clock tick
     self.screenSurface.fill(consts.WHITE)
     self.drawPossibleEdges()
+    self.drawUserEdges()
     self.drawNodes()
     self.drawSolveButton()
     
