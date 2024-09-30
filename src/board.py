@@ -177,6 +177,7 @@ class Board:
       
       if distance <= treshold:
         self.onEdgeClick(edge)
+        break
   
   def update(self):
     # Function to run with every clock tick
