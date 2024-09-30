@@ -179,6 +179,25 @@ class Board:
         self.onEdgeClick(edge)
         break
   
+  def getEdgeCount(self, x, y):
+    count = 0
+    for edge in self.userEdges:
+      
+      if (x, y) in edge[1]:
+        count += edge[0]  
+    return count
+
+  def checkIfSolved(self):
+    for i in range(self.size):
+      for j in range(self.size):
+        nodeValue = self.matrix[i][j]
+        if nodeValue != 0:
+          count = self.getEdgeCount(i, j)
+          if count != nodeValue:
+            return False
+    
+    return True
+  
   def update(self):
     # Function to run with every clock tick
     self.screenSurface.fill(consts.WHITE)
@@ -186,6 +205,8 @@ class Board:
     self.drawUserEdges()
     self.drawNodes()
     self.drawSolveButton()
+    if self.checkIfSolved():
+      print("Winner")
     
     for event in pygame.event.get():
       match event.type:
