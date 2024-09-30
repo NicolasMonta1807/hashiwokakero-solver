@@ -85,7 +85,7 @@ class Board:
     for edge in self.possibleEdges:
       source = self.getDrawPosition(edge[1][0])
       destination = self.getDrawPosition(edge[1][1])
-      pygame.draw.line(self.screenSurface, consts.GRAY, source, destination, 1)
+      pygame.draw.line(self.screenSurface, consts.GRAY, source, destination, consts.EDGE_WITH)
   
   def drawUserEdges(self):
     if len(self.userEdges) == 0:
@@ -94,7 +94,26 @@ class Board:
     for edge in self.userEdges:
       source = self.getDrawPosition(edge[1][0])
       destination = self.getDrawPosition(edge[1][1])
-      pygame.draw.line(self.screenSurface, consts.BLACK, source, destination, 5)
+      
+      # Draw the line
+      pygame.draw.line(self.screenSurface, consts.BLACK, source, destination, consts.USER_EDGE_WIDTH)
+      
+      # Calculate the middle of the line and move to given point. Changes if its horizontal or vertical
+      midpoint = 0 
+      if edge[1][0][0] == edge[1][1][0]:
+        midpoint = ((source[0] + destination[0]) // 2, ((source[1] + destination[1]) // 2) - consts.VERTICAL_OFFSET)
+      else:
+        midpoint = (((source[0] + destination[0]) + consts.HORIZONTAL_OFFSET) // 2, (source[1] + destination[1]) // 2)
+            
+      # Render the text indicating edge line
+      font = pygame.font.Font(None, consts.NORMAL_FONT)
+      label = font.render(str(edge[0]), True, consts.BLACK)
+      
+      # Get the text reference
+      text_rect = label.get_rect(center=midpoint)
+      
+      # Draw on screen
+      self.screenSurface.blit(label, text_rect)
      
   def distanceToEdge(self, point, edge):
     # Unpack the coordinates of the line segment and the point
