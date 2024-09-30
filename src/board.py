@@ -1,6 +1,7 @@
 from utils import consts
 import pygame
 import math
+from time import sleep
 
 class _NumberTextImageCache:
 	def __init__(self):
@@ -69,7 +70,7 @@ class Board:
     button_rect = pygame.Rect(button_position[0], button_position[1], consts.BUTTON_WIDTH, consts.BUTTON_HEIGHT)
     
     pygame.draw.rect(self.screenSurface, consts.GREEN, button_rect)
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, consts.NORMAL_FONT)
     text_surface = font.render("Solve", True, consts.BLACK)
     text_rect = text_surface.get_rect(center=button_rect.center)
     self.screenSurface.blit(text_surface, text_rect)
@@ -198,16 +199,30 @@ class Board:
     
     return True
   
+  def drawWinner(self):
+    self.screenSurface.fill(consts.WHITE)
+    
+    # Calculate the center position of the screen
+    screen_center = (consts.SCREEN_WIDTH / 2, consts.SCREEN_HEIGHT / 2)
+    
+    text_box = pygame.Rect(0, 0, consts.BUTTON_WIDTH, consts.BUTTON_HEIGHT)
+    text_box.center = screen_center  # Set the rectangle's center to the screen's center
+    
+    pygame.draw.rect(self.screenSurface, consts.WHITE, text_box)
+    
+    font = pygame.font.Font(None, consts.NORMAL_FONT)
+    text_surface = font.render("You Win!", True, consts.GREEN)
+    
+    # Center the text surface within the text box
+    text_rect = text_surface.get_rect(center=text_box.center)
+    
+    # Blit the text surface onto the screen
+    self.screenSurface.blit(text_surface, text_rect)
+  
   def update(self):
     # Function to run with every clock tick
-    self.screenSurface.fill(consts.WHITE)
-    self.drawPossibleEdges()
-    self.drawUserEdges()
-    self.drawNodes()
-    self.drawSolveButton()
-    if self.checkIfSolved():
-      print("Winner")
     
+    # Handle events
     for event in pygame.event.get():
       match event.type:
         case pygame.MOUSEBUTTONDOWN:
@@ -215,3 +230,15 @@ class Board:
         case pygame.QUIT:
           pygame.quit()
           exit() 
+    
+    # Render screen
+    self.screenSurface.fill(consts.WHITE)
+    self.drawPossibleEdges()
+    self.drawUserEdges()
+    self.drawNodes()
+    self.drawSolveButton()
+      
+    if self.checkIfSolved():
+      self.drawWinner()
+    
+    
