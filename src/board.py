@@ -24,6 +24,7 @@ class Board:
     self.drawPosition = (consts.EDGE_PADDING, consts.EDGE_PADDING)
     self.nodeSpacing = consts.NODES_SPACING
     self.screenSize = [consts.SCREEN_WIDTH, consts.SCREEN_HEIGHT]
+    self.userEdges = []
 
   def generateBoard(self):
     # Use matrix to get available nodes
@@ -117,10 +118,27 @@ class Board:
     return math.sqrt(dx ** 2 + dy ** 2)
   
   def onEdgeClick(self, edge):
-    print(f"Clicked {edge}")
     # Switch edge value from 0,1 and 2
     edge[0] = (edge[0] + 1) % 3
-    print(f"Edge from {edge[1][0]} to {edge[1][1]} changed to {edge[0]}")
+    
+    # Check if the edge already exists in userEdges (based on connected nodes)
+    existing_edge_index = None
+    for i, e in enumerate(self.userEdges):
+        if e[1] == edge[1]:  # Compare the connected nodes
+            existing_edge_index = i
+            break
+
+    if edge[0] != 0:
+        if existing_edge_index is not None:
+            # Update the existing edge's value
+            self.userEdges[existing_edge_index] = edge
+        else:
+            # Add the new edge if it doesn't exist
+            self.userEdges.append(edge)
+    else:
+        # Remove the edge if edge[0] is 0
+        if existing_edge_index is not None:
+            del self.userEdges[existing_edge_index]
   
   def handleClick(self, mouse_pos):
     # Distance to be considered an edge selection
