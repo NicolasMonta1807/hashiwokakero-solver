@@ -33,7 +33,7 @@ class Board:
     
     for u in self.nodes:
       # Check if horizontal neighbours are possible
-      if u[0] < self.size - 1:
+      if u[1] < self.size - 1:
         # Check entire row for first neighbour
         for i in range(1, self.size):
           v = (u[0], u[1] + i)
@@ -43,7 +43,7 @@ class Board:
             break
       
       # Check if vertical neighbours are possible
-      if u[1] < self.size - 1:
+      if u[0] < self.size - 1:
         # Check entire column for first neighbour
         for i in range(1, self.size):
           v = (u[0] + i, u[1])
@@ -76,9 +76,16 @@ class Board:
       pygame.draw.circle(screen, consts.WHITE, self.getDrawPosition(u), 16)
       pygame.draw.circle(screen, consts.BLACK, self.getDrawPosition(u), 16, 1)
       self.textCache.Draw(screen, self.getDrawPosition(u), self.matrix[u[0]][u[1]])
-
+  
+  def drawPossibleEdges(self, screen):
+    for edge in self.possibleEdges:
+      source = self.getDrawPosition(edge[1][0])
+      destination = self.getDrawPosition(edge[1][1])
+      pygame.draw.line(screen, consts.GRAY, source, destination, 1)
+        
   def update(self):
     # Function to run with every clock tick
     self.screenSurface.fill(consts.WHITE)
+    self.drawPossibleEdges(self.screenSurface)
     self.drawNodes(self.screenSurface)
     self.drawSolveButton(self.screenSurface)
