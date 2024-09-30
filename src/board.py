@@ -1,5 +1,6 @@
 from utils import consts
 import pygame
+import math
 
 class _NumberTextImageCache:
 	def __init__(self):
@@ -39,7 +40,8 @@ class Board:
           v = (u[0], u[1] + i)
           if v in self.nodes:
             # A horizontal neighbour exists and can be connected
-            self.possibleEdges.append((1, (u, v)))
+            # Edge has value 0 since no initial bridges are connected
+            self.possibleEdges.append([0, [u, v]])
             break
       
       # Check if vertical neighbours are possible
@@ -49,7 +51,8 @@ class Board:
           v = (u[0] + i, u[1])
           if v in self.nodes:
             # A vertical neighbour exists and can be connected
-            self.possibleEdges.append((1, (u, v)))
+            # Edge has value 0 since no initial bridges are connected
+            self.possibleEdges.append([0, [u, v]])
             break
   
   def initScreen(self):
@@ -83,9 +86,63 @@ class Board:
       destination = self.getDrawPosition(edge[1][1])
       pygame.draw.line(screen, consts.GRAY, source, destination, 1)
         
+  def distanceToEdge(self, point, edge):
+    # Unpack the coordinates of the line segment and the point
+    (x1, y1) = self.getDrawPosition(edge[1][0])
+    (x2, y2) = self.getDrawPosition(edge[1][1])
+    (x3, y3) = point
+    
+    # Direction vector of the line segment
+    dirx = x2 - x1
+    diry = y2 - y1
+    
+    # Length squared of the direction vector (magnitude squared)
+    dirSq = float(dirx ** 2 + diry ** 2)
+    
+    # Parametric equation of the point projection
+    u = ((x3 - x1) * dirx + (y3 - y1) * diry) / dirSq
+    
+    # Clamp u to the range [0, 1] to ensure projection is on the segment
+    u = min(max(0, u), 1)
+    
+    # Calculate the closest point (px, py) on the line segment to the point (x3, y3)
+    px = x1 + u * dirx
+    py = y1 + u * diry
+    
+    # Calculate the difference (distance vector) between the closest point and the point
+    dx = px - x3
+    dy = py - y3
+    
+    # Return the squared distance
+    return math.sqrt(dx ** 2 + dy ** 2)
+  
+  def onEdgeClick(self, edge):
+    print(f"Clicked {edge}")
+    # Switch edge value from 0,1 and 2
+    edge[0] = (edge[0] + 1) % 3
+    print(f"Edge from {edge[1][0]} to {edge[1][1]} changed to {edge[0]}")
+  
+  def handleClick(self, mouse_pos):
+    # Distance to be considered an edge selection
+    treshold = 10 # Pixels
+    
+    for edge in self.possibleEdges:
+      distance = self.distanceToEdge(mouse_pos, edge)
+      
+      if distance <= treshold:
+        self.onEdgeClick(edge)
+  
   def update(self):
     # Function to run with every clock tick
     self.screenSurface.fill(consts.WHITE)
     self.drawPossibleEdges(self.screenSurface)
     self.drawNodes(self.screenSurface)
     self.drawSolveButton(self.screenSurface)
+    
+    for event in pygame.event.get():
+      match event.type:
+        case pygame.MOUSEBUTTONDOWN:
+          self.handleClick(pygame.mouse.get_pos())
+        case pygame.QUIT:
+          pygame.quit()
+          exit() 

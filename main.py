@@ -7,19 +7,15 @@ def main(filename):
   gameMatrix = reader.readgame(filename)
 
   pygame.init()
+  pygame.mixer.stop()
+  
   board = Board(gameMatrix)
   board.generateBoard()
   board.initScreen()
 
   clock = pygame.time.Clock()
   pygame.display.set_caption("Hashiwokakero - By TwoMates")
-  solved = False
-  while not solved:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        solved = True
-      else:
-        continue
+  while True:      
     board.update()
     clock.tick(120)
     pygame.display.flip()
