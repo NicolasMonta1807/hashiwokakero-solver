@@ -56,11 +56,10 @@ class BoardView:
         
         return button_rect.collidepoint(mouse_pos)
         
-
     def handleClick(self, mouse_pos, threshold=20):
         
         if self.isSolveButtonPressed(mouse_pos):
-            print("Solve button pressed")
+            self.logic.solve()
             return
         
         for edge in self.logic.possibleEdges:
@@ -114,7 +113,6 @@ class BoardView:
             # Dibujar el texto en la pantalla
             self.screenSurface.blit(label, text_rect)
 
-
     def drawWinner(self):
         self.screenSurface.fill(consts.WHITE)
         screen_center = (consts.SCREEN_WIDTH / 2, consts.SCREEN_HEIGHT / 2)
@@ -140,5 +138,5 @@ class BoardView:
         self.drawNodes()
         self.drawSolveButton()
 
-        if self.logic.checkIfSolved():
-            self.drawWinner()
+        # if self.logic.checkIfSolved():
+        #     self.drawWinner()

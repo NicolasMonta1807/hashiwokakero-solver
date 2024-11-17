@@ -1,4 +1,3 @@
-# board_logic.py
 class BoardLogic:
     def __init__(self, matrix):
         self.size = len(matrix)
@@ -62,8 +61,6 @@ class BoardLogic:
 
         return False
 
-
-
     def onEdgeClick(self, edge):
         if self.isCrossing(edge):
             return
@@ -100,3 +97,29 @@ class BoardLogic:
                     if count != nodeValue:
                         return False
         return True
+
+    def solve(self):
+        self.userEdges.clear()
+        if not self.dfs(self.userEdges):
+            print("No hay solución")
+        print("Solucionado")
+    
+    def dfs(self, currentEdges):
+        if self.checkIfSolved():
+            return True
+
+        for edge in self.possibleEdges:
+            if edge not in currentEdges:
+                for bridgeCount in [1, 2]:
+                    edge[0] = bridgeCount
+                    if not self.isCrossing(edge):
+                        currentEdges.append(edge)
+                        
+                        if self.dfs(currentEdges):
+                            return True
+
+                        currentEdges.pop()
+                
+                edge[0] = 0
+        
+        return False
