@@ -1,6 +1,7 @@
 import pygame
-from utils import reader, consts
-from src.board import Board
+from utils import reader
+from src.board_view import BoardView
+from src.board_logic import BoardLogic
 import sys
 
 def main(filename):
@@ -9,17 +10,19 @@ def main(filename):
   pygame.init()
   pygame.mixer.stop()
   
-  board = Board(gameMatrix)
-  board.generateBoard()
-  board.initScreen()
+  logic = BoardLogic(gameMatrix)
+  logic.generateBoard()
+  
+  view = BoardView(logic)
+  view.initScreen()
 
   clock = pygame.time.Clock()
   pygame.display.set_caption("Hashiwokakero - By TwoMates")
+  
   while True:      
-    board.update()
+    view.update()
     clock.tick(120)
-    pygame.display.flip()
-pygame.quit()
+    pygame.display.flip()    
 
 if __name__ == "__main__":
   if len(sys.argv) != 2:
