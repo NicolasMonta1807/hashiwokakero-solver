@@ -49,8 +49,20 @@ class BoardView:
         dy = py - y3
 
         return math.sqrt(dx ** 2 + dy ** 2)
+    
+    def isSolveButtonPressed(self, mouse_pos):
+        button_position = [consts.SCREEN_WIDTH - consts.BUTTON_WIDTH, consts.SCREEN_HEIGHT - consts.BUTTON_HEIGHT]
+        button_rect = pygame.Rect(button_position[0], button_position[1], consts.BUTTON_WIDTH, consts.BUTTON_HEIGHT)
+        
+        return button_rect.collidepoint(mouse_pos)
+        
 
-    def handleClick(self, mouse_pos, threshold=25):
+    def handleClick(self, mouse_pos, threshold=20):
+        
+        if self.isSolveButtonPressed(mouse_pos):
+            print("Solve button pressed")
+            return
+        
         for edge in self.logic.possibleEdges:
             distance = self.distanceToEdge(mouse_pos, edge)
             if distance <= threshold:
