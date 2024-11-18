@@ -140,6 +140,8 @@ class BoardView:
         self.drawNodes()
         self.drawSolveButton()
         pygame.display.flip()
+        
+        pygame.time.delay(25)
 
         # if self.logic.checkIfSolved():
         #     self.drawWinner()

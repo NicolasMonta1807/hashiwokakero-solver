@@ -19,11 +19,9 @@ def main(filename):
 
   clock = pygame.time.Clock()
   pygame.display.set_caption("Hashiwokakero - By TwoMates")
-  
   while True:      
     view.update()
     clock.tick(120)
-    pygame.display.flip()    
 
 if __name__ == "__main__":
   if len(sys.argv) != 2:
