@@ -1,11 +1,12 @@
 class BoardLogic:
-    def __init__(self, matrix):
+    def __init__(self, matrix, update_callback=None):
         self.size = len(matrix)
         self.matrix = matrix
         self.nodes = []
         self.possibleEdges = []
         self.userEdges = []
         self.generateBoard()
+        self.update_callback = update_callback
 
     def generateBoard(self):
         for i in range(self.size):
@@ -116,10 +117,16 @@ class BoardLogic:
                 if edge in self.userEdges:
                     self.userEdges.remove(edge)
             
+            if self.update_callback:
+                self.update_callback()
+            
             if self.automaticSolve(edgeIndex + 1):
                 return True
 
             if edge in self.userEdges:
                 self.userEdges.remove(edge)
+                
+            if self.update_callback:
+                self.update_callback()
 
         return 

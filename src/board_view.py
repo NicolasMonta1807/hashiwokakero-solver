@@ -13,13 +13,15 @@ class _NumberTextImageCache:
         screen.blit(surface, surface.get_rect(center=pos))
 
 class BoardView:
-    def __init__(self, logic):
+    def __init__(self, logic : BoardLogic):
         self.logic = logic
         self.textCache = _NumberTextImageCache()
         self.screenSurface = None
         self.drawPosition = (consts.EDGE_PADDING, consts.EDGE_PADDING)
         self.nodeSpacing = consts.NODES_SPACING
         self.screenSize = [consts.SCREEN_WIDTH, consts.SCREEN_HEIGHT]
+        
+        self.logic.update_callback = self.update
 
     def initScreen(self):
         self.screenSurface = pygame.display.set_mode(self.screenSize, pygame.DOUBLEBUF)
@@ -137,6 +139,7 @@ class BoardView:
         self.drawUserEdges()
         self.drawNodes()
         self.drawSolveButton()
+        pygame.display.flip()
 
         # if self.logic.checkIfSolved():
         #     self.drawWinner()
