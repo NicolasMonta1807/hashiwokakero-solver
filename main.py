@@ -4,9 +4,7 @@ from src.board_view import BoardView
 from src.board_logic import BoardLogic
 import sys
 
-def main(filename):
-  sys.setrecursionlimit(10000)
-  
+def main(filename):  
   gameMatrix = reader.readgame(filename)
 
   pygame.init()

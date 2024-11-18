@@ -94,11 +94,50 @@ class BoardLogic:
     def solve(self):
         if not self.possibleEdges:
             self.generateBoard()
-        
+            
+        while self.applyHeuristics():
+            if self.update_callback:
+                self.update_callback()
+            
         if self.automaticSolve():
             print("Game solved")
         else:
             print("No solution")
+
+    def applyHeuristics(self):
+        # Aplicar las heurísticas para simplificar el tablero antes de resolver exhaustivamente
+        changes_made = False
+
+        for i in range(self.size):
+            for j in range(self.size):
+                nodeValue = self.matrix[i][j]
+                if nodeValue == 0:
+                    continue
+
+                # Encontrar todos los vecinos conectados al nodo actual
+                neighbors = [edge for edge in self.possibleEdges if (i, j) in edge[1]]
+                
+                # Heurística 1: Si el nodo tiene el mismo número de vecinos que el valor del nodo
+                if len(neighbors) == nodeValue:
+                    for edge in neighbors:
+                        if edge[0] < 2 and not self.isCrossing(edge):  # Verificar si el puente no cruza
+                            edge[0] = 2
+                            if edge not in self.userEdges:
+                                self.userEdges.append(edge)
+                                print("Heurística 1 aplicada")
+                            changes_made = True
+                
+                # Heurística 2: Si el nodo tiene valor 1 y solo un vecino
+                elif nodeValue == 1 and len(neighbors) == 1:
+                    edge = neighbors[0]
+                    if edge[0] < 1 and not self.isCrossing(edge):  # Verificar si el puente no cruza
+                        edge[0] = 1
+                        if edge not in self.userEdges:
+                            self.userEdges.append(edge)
+                            print("Heurística 2 aplicada")
+                        changes_made = True
+
+        return changes_made
 
     def automaticSolve(self, edgeIndex=0):
         if edgeIndex >= len(self.possibleEdges):
