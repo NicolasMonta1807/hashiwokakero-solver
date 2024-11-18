@@ -5,6 +5,7 @@ class BoardLogic:
         self.nodes = []
         self.possibleEdges = []
         self.userEdges = []
+        self.generateBoard()
 
     def generateBoard(self):
         for i in range(self.size):
@@ -50,15 +51,6 @@ class BoardLogic:
             if d1 * d2 < 0 and d3 * d4 < 0:
                 return True
 
-            if d1 == 0 and is_point_on_segment(p3, p4, p1):
-                continue
-            if d2 == 0 and is_point_on_segment(p3, p4, p2):
-                continue
-            if d3 == 0 and is_point_on_segment(p1, p2, p3):
-                continue
-            if d4 == 0 and is_point_on_segment(p1, p2, p4):
-                continue
-
         return False
 
     def onEdgeClick(self, edge):
@@ -99,27 +91,35 @@ class BoardLogic:
         return True
 
     def solve(self):
-        self.userEdges.clear()
-        if not self.dfs(self.userEdges):
-            print("No hay solución")
-        print("Solucionado")
-    
-    def dfs(self, currentEdges):
-        if self.checkIfSolved():
-            return True
-
-        for edge in self.possibleEdges:
-            if edge not in currentEdges:
-                for bridgeCount in [1, 2]:
-                    edge[0] = bridgeCount
-                    if not self.isCrossing(edge):
-                        currentEdges.append(edge)
-                        
-                        if self.dfs(currentEdges):
-                            return True
-
-                        currentEdges.pop()
-                
-                edge[0] = 0
+        if not self.possibleEdges:
+            self.generateBoard()
         
-        return False
+        if self.automaticSolve():
+            print("Game solved")
+        else:
+            print("No solution")
+
+    def automaticSolve(self, edgeIndex=0):
+        if edgeIndex >= len(self.possibleEdges):
+            return self.checkIfSolved()
+
+        edge = self.possibleEdges[edgeIndex]
+        
+        for bridges in [0, 1, 2]:
+            edge[0] = bridges
+            if bridges > 0:
+                if not self.isCrossing(edge):
+                    self.userEdges.append(edge)
+                else:
+                    continue
+            else:
+                if edge in self.userEdges:
+                    self.userEdges.remove(edge)
+            
+            if self.automaticSolve(edgeIndex + 1):
+                return True
+
+            if edge in self.userEdges:
+                self.userEdges.remove(edge)
+
+        return 

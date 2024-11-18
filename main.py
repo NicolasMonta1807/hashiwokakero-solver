@@ -5,13 +5,14 @@ from src.board_logic import BoardLogic
 import sys
 
 def main(filename):
+  sys.setrecursionlimit(10000)
+  
   gameMatrix = reader.readgame(filename)
 
   pygame.init()
   pygame.mixer.stop()
   
   logic = BoardLogic(gameMatrix)
-  logic.generateBoard()
   
   view = BoardView(logic)
   view.initScreen()
