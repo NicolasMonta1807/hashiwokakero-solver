@@ -10,7 +10,7 @@ def main(filename):
   pygame.init()
   pygame.mixer.stop()
   
-  logic = BoardLogic(gameMatrix)
+  logic = BoardLogic(gameMatrix, filename)
   
   view = BoardView(logic)
   view.initScreen()
